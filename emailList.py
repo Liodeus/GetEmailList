@@ -16,17 +16,13 @@ def connection(browser):
     browser["username"] = username
     browser["password"] = password
 
-    # Send the form you just fill
+    # Send the form you just fill and get the cookie(s)
     response = browser.submit()
     cookies = browser._ua_handlers['_cookies'].cookiejar
-    cookie_dict = {}
-    for c in cookies:
-        cookie_dict[c.name] = c.value
-    print(cookie_dict)
     browser.back()
 
-    # If len is more than 150 then you aren't connected
-    if 1:
+    # If there is 1 cookie then you aren't connected
+    if len(cookies) == 1:
         print("")
         return connection(browser)
 
