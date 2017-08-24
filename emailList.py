@@ -5,22 +5,31 @@
 import mechanize
 from bs4 import BeautifulSoup
 
-url = "https://cas.univ-valenciennes.fr/cas/login?service=https://listemeletu.univ-valenciennes.fr/wws/sso_login_succeeded/CAS-UVHC"
+urlToConnect = "https://cas.univ-valenciennes.fr/cas/login?service=https://listemeletu.univ-valenciennes.fr/wws/sso_login_succeeded/CAS-UVHC"
 
-br = mechanize.Browser()
-response = br.open(url)
+browser = mechanize.Browser()
+response = browser.open(urlToConnect)
 
-br.form = list(br.forms())[0]
-br["username"] = "..."
-br["password"] = "..."
+# Fill the authentification form
+browser.form = list(browser.forms())[0]
+browser["username"] = "..."
+browser["password"] = "..."
 
-response = br.submit()
-br.back()
+# Send the form you just fill
+response = browser.submit()
+browser.back()
 
+# Link where you can get the email list of all students
 link = "https://listemeletu.univ-valenciennes.fr/wws/review/etudiants/"
 
+# Output file
+file = open("studentsEmail.txt", 'w')
+
+# Go through all page (1-30) and get the student email
 for page in range(1, 31):
-    pageToOpen = br.open(link + str(page) + "/500/email")
-    soup = BeautifulSoup(pageToOpen.read(), "html.parser")
-    for x in soup.find_all("td", {"class": "text_left"}):
-        print(x.text.strip())
+    pageToOpen = browser.open(link + str(page) + "/500/email") # format -> link/pageNumber/500/email
+    soup = BeautifulSoup(pageToOpen.read(), "html.parser")  # Html parser
+    for student in soup.find_all("td", {"class": "text_left"}):
+        file.write(student.text.strip() + "\n")
+
+file.close()
