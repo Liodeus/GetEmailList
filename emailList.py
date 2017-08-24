@@ -3,13 +3,14 @@
 
 import mechanize
 import time
+import getpass
 from bs4 import BeautifulSoup
 
 
 def connection(browser):
     # Authentification
     username = raw_input("Username : ")
-    password = raw_input("Password : ")
+    password = getpass.getpass("Password : ")
 
     # Fill the authentification form
     browser.form = list(browser.forms())[0]
