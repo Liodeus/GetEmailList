@@ -3,30 +3,8 @@
 
 import mechanize
 import time
-import getpass
+import connection
 from bs4 import BeautifulSoup
-
-
-def connection(browser):
-    # Authentification
-    username = raw_input("Username : ")
-    password = getpass.getpass("Password : ")
-
-    # Fill the authentification form
-    browser.form = list(browser.forms())[0]
-    browser["username"] = username
-    browser["password"] = password
-
-    # Send the form you just fill and get the cookie(s)
-    response = browser.submit()
-    cookies = browser._ua_handlers['_cookies'].cookiejar
-    browser.back()
-
-    # If there is 1 cookie then you aren't connected
-    if len(cookies) == 1:
-        print("")
-        return connection(browser)
-
 
 urlToConnect = "https://cas.univ-valenciennes.fr/cas/login?service=https://listemeletu.univ-valenciennes.fr/wws/sso_login_succeeded/CAS-UVHC"
 
@@ -34,7 +12,7 @@ browser = mechanize.Browser()
 browser.set_handle_robots(False)
 response = browser.open(urlToConnect)
 
-connection(browser)
+connection.connect(browser) # Connection 
 
 print("\nYou are now connected, wait a few seconds work in progress !\n")
 
@@ -46,12 +24,16 @@ file = open("studentsEmail.txt", 'w')
 start = time.time()  # Start the timer
 
 # Go through all pages (1-30) and get the student email
+emailCount = 0
 for page in range(1, 31):
     pageToOpen = browser.open(link + str(page) + "/500/email") # link format -> link/pageNumber/500/email
     soup = BeautifulSoup(pageToOpen.read(), "html.parser")  # Html parser
     for student in soup.find_all("td", {"class": "text_left"}):
         file.write(student.text.strip() + "\n")
+        emailCount += 1
 
 file.close()
 
 print("Time elapsed : {} seconds".format(int(time.time() - start)))
+print("Email count : {}".format(emailCount))
+print("You can now find all the emails in studentsEmail.txt")
