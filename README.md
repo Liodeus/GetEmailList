@@ -6,8 +6,8 @@ Requirements
 You need Python 2.7 to run emailList.
 
 Two dependencies : <br />
-....- mechanize <br />
-....- bs4 <br />
+    - mechanize <br />
+    - bs4 <br />
 
 In Ubuntu, Mint and Debian you can install mechanize and bs4 like this:
 
