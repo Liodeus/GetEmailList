@@ -23,9 +23,9 @@ file = open("studentsEmail.txt", 'w')
 
 start = time.time()  # Start the timer
 
-# Go through all pages (1-33) and get the student email
+# Go through all pages (1-35) and get the student email
 emailCount = 0
-for page in range(1, 33):
+for page in range(1, 35):
     pageToOpen = browser.open(link + str(page) + "/500/email") # link format -> link/pageNumber/500/email
     soup = BeautifulSoup(pageToOpen.read(), "html.parser")  # Html parser
     for student in soup.find_all("td", {"class": "text_left"}):
